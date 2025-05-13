@@ -2,7 +2,14 @@ package org.dieschnittstelle.ess.basics;
 
 
 import org.dieschnittstelle.ess.basics.annotations.AnnotatedStockItemBuilder;
+import org.dieschnittstelle.ess.basics.annotations.DisplayAs;
 import org.dieschnittstelle.ess.basics.annotations.StockItemProxyImpl;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.dieschnittstelle.ess.utils.Utils.*;
 
@@ -39,6 +46,25 @@ public class ShowAnnotations {
 			//  will then be built from the field names and field values.
 			//  Note that only read-access to fields via getters or direct access
 			//  is required here.
+//			{<einfacher Klassenname> <attr1>:<Wert von attr1>, ...}, z.B.:
+//			{Milch menge:20, markenname:Mark Brandenburg}
+
+			StringBuilder msg = new StringBuilder("{ " + instance.getClass().getSimpleName() + " ");
+
+			for(Field field : instance.getClass().getDeclaredFields()) {
+				field.setAccessible(true);
+				String fieldName = "";
+
+				if(field.isAnnotationPresent(DisplayAs.class)) {
+					fieldName = field.getAnnotation(DisplayAs.class).value();
+				} else {
+					fieldName = field.getName();
+				}
+				Object fieldVal = field.get(instance);
+				msg.append(fieldName).append(":").append(fieldVal).append(" ");
+			}
+
+			show(msg.append("}").toString());
 
 			// TODO BAS3: if the new @DisplayAs annotation is present on a field,
 			//  the string representation will not use the field's name, but the name
