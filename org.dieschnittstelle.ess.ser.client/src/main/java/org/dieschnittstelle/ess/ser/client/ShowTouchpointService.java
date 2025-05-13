@@ -268,7 +268,7 @@ public class ShowTouchpointService {
 
 			/* if successful: */
 
-			int code = HttpStatus.SC_OK;
+			int code = HttpStatus.SC_CREATED;
 
 			if(code == statusLine.getStatusCode()) {
 				ObjectInputStream stream3 = new ObjectInputStream(response.getEntity().getContent());
